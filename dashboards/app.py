@@ -118,3 +118,39 @@ with col6:
         st.pyplot(fig4)
     else:
         st.write("Faltan datos para calcular correlaciones.")
+
+# =====================================================================
+# NUEVA SECCIÓN: VARIABLES DE MÁXIMA INFLUENCIA
+# =====================================================================
+st.markdown("---")
+st.header("🎯 Análisis de Variables de Máxima Influencia (Claves del Negocio)")
+
+col7, col8 = st.columns(2)
+
+with col7:
+    st.subheader("📆 Impacto del Historial Reciente (pdays)")
+    # Filtramos los NaN (que eran el 999 original) para ver solo a los que sí se contactaron antes
+    df_pdays = df_filtrado[df_filtrado['pdays'].notna()]
+    
+    if df_pdays.shape[0] > 0:
+        fig5, ax5 = plt.subplots(figsize=(6, 4))
+        sns.boxplot(data=df_pdays, x='y', y='pdays', hue='y', palette={'no': 'lightcoral', 'yes': 'lightblue'}, legend=False, ax=ax5)
+        plt.xlabel("¿Aceptó el Depósito?")
+        plt.ylabel("Días desde la campaña anterior")
+        st.pyplot(fig5)
+        st.caption("💡 Revelación: Los clientes contactados en los últimos 10 días tienen una tasa de conversión masiva.")
+    else:
+        st.write("No hay registros de clientes contactados en campañas previas con los filtros seleccionados.")
+
+with col8:
+    st.subheader("🏦 Comportamiento según el Contexto Financiero (euribor3m)")
+    if total_contactos > 0:
+        fig6, ax6 = plt.subplots(figsize=(6, 4))
+        # Evaluamos la densidad de aceptación según las tasas de interés del mercado
+        sns.kdeplot(data=df_filtrado, x='euribor3m', hue='y', palette={'no': 'red', 'yes': 'blue'}, fill=True, common_norm=False, alpha=0.5, ax=ax6)
+        plt.xlabel("Tasa de Interés Euribor 3 Meses")
+        plt.ylabel("Densidad de Respuestas")
+        st.pyplot(fig6)
+        st.caption("💡 Revelación: El éxito se dispara en ciertos umbrales de tasas de interés del mercado europeo.")
+    else:
+        st.write("No hay datos para mostrar.")
