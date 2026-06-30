@@ -1,0 +1,74 @@
+===========================================================================
+               GUÍA DE DESPLIEGUE Y COMANDOS DEL PROYECTO (DUOC UC)
+===========================================================================
+Proyecto: Solución End-to-End ETL y Dashboard Interactivo
+Evaluación: Evaluación Sumativa III / Examen Parcial N°3
+===========================================================================
+
+Sigue estos pasos en orden secuencial abriendo las terminales necesarias en 
+la carpeta raíz de tu proyecto ('proyecto_etl_final').
+
+---------------------------------------------------------------------------
+PASO 1: LEVANTAR INFRAESTRUCTURA (DOCKER)
+---------------------------------------------------------------------------
+Comando para encender el contenedor aislado de PostgreSQL en segundo plano:
+
+    docker-compose up -d
+
+* Explicación para el profesor: "Utilizamos Docker para garantizar la 
+  reproducibilidad del entorno. La bandera '-d' (detached) levanta la base 
+  de datos en segundo plano en el puerto 5433 sin bloquear la terminal actual."
+
+
+---------------------------------------------------------------------------
+PASO 2: EJECUTAR EL PIPELINE AUTOMATIZADO (ETL)
+---------------------------------------------------------------------------
+Comando para poblar la base de datos con los datos limpios y transformados:
+
+    python etl.py
+
+* Explicación para el profesor: "Este script implementa el proceso de 
+  Extracción, Transformación y Carga. Lee el dataset original, soluciona 
+  los problemas de codificación mediante 'pg8000', valida los esquemas y 
+  los inyecta en la tabla 'clientes' de PostgreSQL."
+
+
+---------------------------------------------------------------------------
+PASO 3: ENCENDER LA API RESTful (Abre una NUEVA terminal)
+---------------------------------------------------------------------------
+Comando para iniciar el servidor local en vivo que expone los datos económicos:
+
+    python -m uvicorn api.main:app --reload
+
+* Nota: Asegúrate de ajustar la ruta 'api.main:app' dependiendo de la 
+  estructura exacta de carpetas de tu FastAPI.
+* Explicación para el profesor: "Montamos una API con FastAPI y Uvicorn que 
+  simula una fuente de datos externa en vivo, cumpliendo con la exigencia de 
+  integrar al menos 3 fuentes distintas."
+
+
+---------------------------------------------------------------------------
+PASO 4: LANZAR EL DASHBOARD INTERACTIVO (Abre otra NUEVA terminal)
+---------------------------------------------------------------------------
+Comando seguro para arrancar la interfaz web interactiva de cara al usuario:
+
+    python -m streamlit run dashboards/app.py
+
+* Explicación para el profesor: "Desarrollamos la capa de presentación con 
+  Streamlit. Este dashboard consume directamente la base de datos de 
+  producción en Docker e incluye filtros dinámicos por audiencia para la 
+  toma de decisiones estratégicas de marketing bancario."
+
+
+===========================================================================
+ESTRUCTURA DE CARPETAS RECOMENDADA POR LA RÚBRICA:
+===========================================================================
+/proyecto_etl_final
+│
+├── /api/           -> Código de la API RESTful (main.py)
+├── /dashboards/    -> Código del panel interactivo en Streamlit (app.py)
+├── /docker/        -> Dockerfiles y docker-compose.yml
+├── /etl/           -> Notebook de análisis exploratorio (01_exploratory_analysis.ipynb)
+├── /docs/          -> Manuales, guía técnica y este archivo README.md
+└── etl.py          -> Script principal del pipeline automatizado
+===========================================================================
