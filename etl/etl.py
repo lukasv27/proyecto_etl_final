@@ -25,24 +25,24 @@ def validar_esquema(df: pd.DataFrame) -> bool:
     Función obligatoria para la validación de esquemas requerida por la pauta.
     Verifica tipos de datos y nulos en columnas críticas antes de la carga.
     """
-    logging.info("🧪 Iniciando validación de esquema de datos...")
+    logging.info("Iniciando validación de esquema de datos...")
     
     # 1. Definir columnas críticas que no pueden ser nulas
     columnas_criticas = ['age', 'job', 'education', 'y']
     for col in columnas_criticas:
         if col not in df.columns:
-            logging.error(f"❌ Validación fallida: Falta la columna crítica '{col}' en el dataset.")
+            logging.error(f"Validación fallida: Falta la columna crítica '{col}' en el dataset.")
             return False
         if df[col].isnull().any():
-            logging.error(f"❌ Validación fallida: Se encontraron valores nulos en la columna crítica '{col}'.")
+            logging.error(f"Validación fallida: Se encontraron valores nulos en la columna crítica '{col}'.")
             return False
 
     # 2. Validar tipos de datos específicos (Ej: Edad debe ser entero)
     if not pd.api.types.is_integer_dtype(df['age']):
-        logging.error("❌ Validación fallida: La columna 'age' no contiene valores puramente enteros.")
+        logging.error("Validación fallida: La columna 'age' no contiene valores puramente enteros.")
         return False
         
-    logging.info("✅ Validación de esquema exitosa. Todos los tipos y restricciones coinciden.")
+    logging.info("Validación de esquema exitosa. Todos los tipos y restricciones coinciden.")
     return True
 
 def ejecutar_pipeline():
@@ -53,17 +53,17 @@ def ejecutar_pipeline():
     
     # --- ETAPA 1: EXTRACCIÓN ---
     try:
-        logging.info(f"📥 Extrayendo datos desde: {ruta_csv}")
+        logging.info(f"Extrayendo datos desde: {ruta_csv}")
         # Se lee con el separador correspondiente (usualmente ';' en el dataset Bank Marketing)
         df = pd.read_csv(ruta_csv, sep=';')
-        logging.info(f"📊 Datos extraídos correctamente. Registros iniciales: {df.shape[0]}")
+        logging.info(f"Datos extraídos correctamente. Registros iniciales: {df.shape[0]}")
     except Exception as e:
         logging.critical(f"💥 Error fatal en la Extracción: {e}")
         return
 
     # --- ETAPA 2: TRANSFORMACIÓN & VALIDACIÓN ---
     try:
-        logging.info("🔄 Iniciando transformaciones de datos...")
+        logging.info("Iniciando transformaciones de datos...")
         
         # Limpieza básica de espacios en blanco en columnas de texto
         columnas_texto = df.select_dtypes(include=['object']).columns
@@ -77,11 +77,11 @@ def ejecutar_pipeline():
 
         # EJECUTAR VALIDACIÓN DE ESQUEMA OBLIGATORIA
         if not validar_esquema(df):
-            logging.error("⛔ Pipeline detenido: Los datos de la transformación no pasaron la validación de esquema.")
+            logging.error("Pipeline detenido: Los datos de la transformación no pasaron la validación de esquema.")
             return
 
     except Exception as e:
-        logging.error(f"❌ Error en la etapa de Transformación: {e}")
+        logging.error(f"Error en la etapa de Transformación: {e}")
         return
 
     # --- ETAPA 3: CARGA ---
@@ -99,10 +99,10 @@ def ejecutar_pipeline():
         logging.info(f"📤 Cargando datos en la base de datos PostgreSQL (Puerto {puerto})...")
         # Carga la data limpia en la tabla clientes reemplazando si ya existía
         df.to_sql("clientes", engine, if_exists="replace", index=False)
-        logging.info("🎉 ¡Carga finalizada con éxito! Base de datos actualizada y operativa.")
+        logging.info("¡Carga finalizada con éxito! Base de datos actualizada y operativa.")
         
     except Exception as e:
-        logging.error(f"❌ Error en la etapa de Carga a la Base de Datos: {e}")
+        logging.error(f"Error en la etapa de Carga a la Base de Datos: {e}")
         return
 
 if __name__ == "__main__":

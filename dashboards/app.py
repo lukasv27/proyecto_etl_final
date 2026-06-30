@@ -29,15 +29,15 @@ def cargar_datos():
 
 try:
     df = cargar_datos()
-    st.sidebar.success(f"✅ Conectado a Docker. {df.shape[0]} registros cargados.")
+    st.sidebar.success(f"Conectado a Docker. {df.shape[0]} registros cargados.")
 except Exception as e:
-    st.sidebar.error(f"❌ Error de conexión: {e}")
+    st.sidebar.error(f"Error de conexión: {e}")
     st.stop()
 
 # =====================================================================
 # FILTROS INTERACTIVOS
 # =====================================================================
-st.sidebar.header("🔍 Filtros de Audiencia")
+st.sidebar.header("Filtros de Audiencia")
 
 lista_empleos = ['Todos'] + list(df['job'].unique())
 empleo_seleccionado = st.sidebar.selectbox("Selecciona Ocupación del Cliente:", lista_empleos)
@@ -62,9 +62,9 @@ else:
 
 col1, col2 = st.columns(2)
 with col1:
-    st.metric(label="📞 Total Clientes Contactados", value=f"{total_contactos:,}")
+    st.metric(label="Total Clientes Contactados", value=f"{total_contactos:,}")
 with col2:
-    st.metric(label="🎯 Tasa de Éxito General", value=f"{tasa_exito:.1f}%")
+    st.metric(label="Tasa de Éxito General", value=f"{tasa_exito:.1f}%")
 
 st.markdown("---")
 
@@ -74,7 +74,7 @@ st.markdown("---")
 col3, col4 = st.columns(2)
 
 with col3:
-    st.subheader("🍰 Distribución de Respuesta (y)")
+    st.subheader("Distribución de Respuesta (y)")
     if total_contactos > 0:
         conteo = df_filtrado['y'].value_counts()
         fig1, ax1 = plt.subplots(figsize=(5, 4))
@@ -84,7 +84,7 @@ with col3:
         st.write("No hay datos para mostrar.")
 
 with col4:
-    st.subheader("🎂 Distribución de Edades de los Contactos")
+    st.subheader("Distribución de Edades de los Contactos")
     if total_contactos > 0:
         fig2, ax2 = plt.subplots(figsize=(6, 4))
         sns.histplot(data=df_filtrado, x='age', kde=True, hue='y', palette={'no': 'red', 'yes': 'blue'}, multiple='stack', ax=ax2)
@@ -99,7 +99,7 @@ st.markdown("---")
 col5, col6 = st.columns(2)
 
 with col5:
-    st.subheader("💼 Volumen de Llamadas por Tipo de Empleo")
+    st.subheader("Volumen de Llamadas por Tipo de Empleo")
     fig3, ax3 = plt.subplots(figsize=(6, 4))
     sns.countplot(data=df_filtrado, y='job', hue='y', palette={'no': 'lightcoral', 'yes': 'lightblue'}, 
                   order=df_filtrado['job'].value_counts().index, ax=ax3)
@@ -108,7 +108,7 @@ with col5:
     st.pyplot(fig3)
 
 with col6:
-    st.subheader("📉 Entorno Macroeconómico vs Éxito")
+    st.subheader("Entorno Macroeconómico vs Éxito")
     variables_macro = ['emp.var.rate', 'cons.price.idx', 'cons.conf.idx', 'euribor3m', 'nr.employed', 'y_num']
     df_macro = df_filtrado[[col for col in variables_macro if col in df_filtrado.columns]]
     
@@ -123,12 +123,12 @@ with col6:
 # NUEVA SECCIÓN: VARIABLES DE MÁXIMA INFLUENCIA
 # =====================================================================
 st.markdown("---")
-st.header("🎯 Análisis de Variables de Máxima Influencia (Claves del Negocio)")
+st.header("Análisis de Variables de Máxima Influencia (Claves del Negocio)")
 
 col7, col8 = st.columns(2)
 
 with col7:
-    st.subheader("📆 Impacto del Historial Reciente (pdays)")
+    st.subheader("Impacto del Historial Reciente (pdays)")
     # Filtramos los NaN (que eran el 999 original) para ver solo a los que sí se contactaron antes
     df_pdays = df_filtrado[df_filtrado['pdays'].notna()]
     
@@ -138,12 +138,12 @@ with col7:
         plt.xlabel("¿Aceptó el Depósito?")
         plt.ylabel("Días desde la campaña anterior")
         st.pyplot(fig5)
-        st.caption("💡 Revelación: Los clientes contactados en los últimos 10 días tienen una tasa de conversión masiva.")
+        st.caption("Revelación: Los clientes contactados en los últimos 10 días tienen una tasa de conversión masiva.")
     else:
         st.write("No hay registros de clientes contactados en campañas previas con los filtros seleccionados.")
 
 with col8:
-    st.subheader("🏦 Comportamiento según el Contexto Financiero (euribor3m)")
+    st.subheader("Comportamiento según el Contexto Financiero (euribor3m)")
     if total_contactos > 0:
         fig6, ax6 = plt.subplots(figsize=(6, 4))
         # Evaluamos la densidad de aceptación según las tasas de interés del mercado
@@ -151,6 +151,6 @@ with col8:
         plt.xlabel("Tasa de Interés Euribor 3 Meses")
         plt.ylabel("Densidad de Respuestas")
         st.pyplot(fig6)
-        st.caption("💡 Revelación: El éxito se dispara en ciertos umbrales de tasas de interés del mercado europeo.")
+        st.caption("Revelación: El éxito se dispara en ciertos umbrales de tasas de interés del mercado europeo.")
     else:
         st.write("No hay datos para mostrar.")

@@ -8,24 +8,24 @@ load_dotenv()
 
 def test_api_online():
     """Prueba que la API RESTful de FastAPI responda correctamente."""
-    print("\n🧪 [TEST] Verificando estado de la API RESTful...")
+    print("\n[TEST] Verificando estado de la API RESTful...")
     url_api = "http://127.0.0.1:8000/api/economico"
     
     try:
         respuesta = requests.get(url_api, timeout=3)
         # Una aserción exitosa valida que el código de respuesta sea 200 OK
         assert respuesta.status_code == 200, f"Código de estado inesperado: {respuesta.status_code}"
-        print("✅ API RESTful: ONLINE (Status 200)")
+        print("API RESTful: ONLINE (Status 200)")
     except AssertionError as ae:
-        print(f"❌ API RESTful: ERROR DE VALIDACIÓN -> {ae}")
+        print(f"API RESTful: ERROR DE VALIDACIÓN -> {ae}")
         raise ae
     except Exception as e:
-        print(f"❌ API RESTful: ERROR DE CONEXIÓN -> El servidor no responde: {e}")
+        print(f"API RESTful: ERROR DE CONEXIÓN -> El servidor no responde: {e}")
         raise e
 
 def test_postgresql_docker_conexion():
     """Prueba la conexión directa a la base de datos relacional dentro de Docker."""
-    print("🧪 [TEST] Verificando conexión a PostgreSQL en Docker...")
+    print("[TEST] Verificando conexión a PostgreSQL en Docker...")
     
     usuario = os.getenv("DB_USER", "postgres")
     clave = os.getenv("DB_PASSWORD", "12345678")
@@ -40,9 +40,9 @@ def test_postgresql_docker_conexion():
         # Intentamos abrir y cerrar una conexión real
         conexion = engine.connect()
         conexion.close()
-        print("✅ Docker PostgreSQL: CONEXIÓN INTEGRAL EXITOSA")
+        print("Docker PostgreSQL: CONEXIÓN INTEGRAL EXITOSA")
     except Exception as e:
-        print(f"❌ Docker PostgreSQL: FALLÓ LA CONEXIÓN -> Verifica el contenedor: {e}")
+        print(f"Docker PostgreSQL: FALLÓ LA CONEXIÓN -> Verifica el contenedor: {e}")
         raise e
 
 if __name__ == "__main__":
@@ -53,6 +53,6 @@ if __name__ == "__main__":
     try:
         test_api_online()
         test_postgresql_docker_conexion()
-        print("\n🏆 ¡TODAS LAS PRUEBAS PASARON EXITOSAMENTE (100% LOGRO)!")
+        print("\n ¡TODAS LAS PRUEBAS PASARON EXITOSAMENTE (100% LOGRO)!")
     except Exception:
-        print("\n🚨 PRUEBAS FALLIDAS: Revisa los contenedores o servicios activos.")
+        print("\n PRUEBAS FALLIDAS: Revisa los contenedores o servicios activos.")
